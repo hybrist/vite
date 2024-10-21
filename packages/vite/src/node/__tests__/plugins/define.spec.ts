@@ -56,6 +56,19 @@ describe('definePlugin', () => {
     )
   })
 
+  test('replaces import.meta.DEBUG with false', async () => {
+    const transform = await createDefinePluginTransform()
+    expect(await transform('const isDebug = import.meta.DEBUG;')).toBe(
+      'const isDebug = false;\n',
+    )
+    const overrideTransform = await createDefinePluginTransform({
+      'import.meta.DEBUG': 'import.meta.DEBUG',
+    })
+    expect(await overrideTransform('const isDebug = import.meta.DEBUG;')).toBe(
+      'const isDebug = import.meta.DEBUG;\n',
+    )
+  })
+
   test('preserve import.meta.hot with override', async () => {
     // assert that the default behavior is to replace import.meta.hot with undefined
     const transform = await createDefinePluginTransform()
